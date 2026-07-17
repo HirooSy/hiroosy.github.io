@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    img {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --surface2: #1a1a1a;
+      --border: #222222;
+      --border2: #2a2a2a;
+      --accent: #ffffff;
+      --text: #e0e0e0;
+      --muted: #666666;
+      --error: #ff4444;
+      --success: #44ff66;
+      --warning: #ffaa44;
+      --font: 'IBM Plex Mono', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      font-family: var(--font);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    /* Horizontal split layout - SELALU HORIZONTAL */
+    .split-layout {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+    }
+
+    /* Left side - Branding */
+    .brand-side {
+      flex: 1;
+      min-width: 180px;
+      background: linear-gradient(135deg, var(--surface2) 0%, var(--surface) 100%);
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+
+    .brand-icon {
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .brand-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .brand-sub {
+      font-size: 4px;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+    }
+
+    /* Right side - Forms */
+    .form-side {
+      flex: 1.2;
+      min-width: 260px;
+      padding: 40px 28px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      padding: 8px 16px;
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 4px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #080808;
+    }
+
+    .form-panel {
+      display: none;
+    }
+
+    .form-panel.active-panel {
+      display: block;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 36px 12px 38px;
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .input-wrapper input:focus {
+      border-color: var(--border2);
+    }
+
+    .input-wrapper svg.icon-left {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 15px;
+      height: 15px;
+      stroke: var(--muted);
+      fill: none;
+      stroke-width: 1.5;
+    }
+
+    .input-wrapper .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      stroke: var(--muted);
+      fill: none;
+      stroke-width: 1.5;
+      transition: stroke 0.2s;
+      z-index: 2;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .input-wrapper .toggle-password:active {
+      stroke: var(--text);
+    }
+
+    .btn {
+      width: 100%;
+      background: var(--accent);
+      color: #080808;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: var(--font);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 10px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn:active {
+      opacity: 0.85;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .alert {
+      background: rgba(255,68,68,0.1);
+      border: 1px solid rgba(255,68,68,0.2);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 10px;
+      color: var(--error);
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .success-alert {
+      background: rgba(68,255,102,0.1);
+      border-color: rgba(68,255,102,0.2);
+      color: var(--success);
+    }
+
+    /* Modal Popup */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      padding: 28px 24px;
+      max-width: 300px;
+      width: 90%;
+      text-align: center;
+      animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0.88);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .modal-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .modal-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .modal-body {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .modal-close {
+      background: var(--accent);
+      color: #080808;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 22px;
+      font-size: 10px;
+      font-weight: 700;
+      font-family: var(--font);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .modal-close:active {
+      opacity: 0.8;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* RESPONSIVE UNTUK LAYAR KECIL - TETAP HORIZONTAL */
+    @media (max-width: 640px) {
+      body {
+        padding: 10px;
+      }
+      
+      .brand-side {
+        padding: 20px 12px;
+        min-width: 130px;
+      }
+      
+      .brand-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        margin-bottom: 10px;
+      }
+      
+      .brand-title {
+        font-size: 14px;
+        letter-spacing: 1.5px;
+        margin-bottom: 4px;
+      }
+      
+      .brand-sub {
+        font-size: 4px;
+      }
+      
+      .form-side {
+        padding: 20px 16px;
+        min-width: 220px;
+      }
+      
+      .tabs {
+        gap: 8px;
+        margin-bottom: 18px;
+      }
+      
+      .tab-btn {
+        padding: 6px 12px;
+        font-size: 9px;
+      }
+      
+      .input-group {
+        margin-bottom: 14px;
+      }
+      
+      .input-wrapper input {
+        padding: 10px 32px 10px 34px;
+        font-size: 12px;
+      }
+      
+      .input-wrapper svg.icon-left {
+        left: 10px;
+        width: 13px;
+        height: 13px;
+      }
+      
+      .input-wrapper .toggle-password {
+        right: 10px;
+        width: 16px;
+        height: 16px;
+      }
+      
+      .btn {
+        padding: 10px;
+        font-size: 9px;
+        margin-top: 8px;
+      }
+      
+      .alert {
+        padding: 8px;
+        font-size: 9px;
+        margin-bottom: 12px;
+      }
+    }
+
+    /* Untuk layar sangat kecil (max 480px) - tetap horizontal */
+    @media (max-width: 480px) {
+      .brand-side {
+        padding: 16px 8px;
+        min-width: 110px;
+      }
+      
+      .brand-icon {
+        width: 42px;
+        height: 42px;
+      }
+      
+      .brand-title {
+        font-size: 11px;
+      }
+      
+      .brand-sub {
+        font-size: 4px;
+      }
+      
+      .form-side {
+        padding: 16px 12px;
+        min-width: 200px;
+      }
+      
+      .tab-btn {
+        padding: 5px 10px;
+        font-size: 8px;
+      }
+      
+      .input-group label {
+        font-size: 8px;
+      }
+      
+      .input-wrapper input {
+        padding: 8px 28px 8px 30px;
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="split-layout">
+    <!-- Left Side: Branding -->
+    <div class="brand-side">
+      <div class="brand-icon">
+        <img src="/image/icon.png" alt="" draggable="false" oncontextmenu="return false">
+      </div>
+      <div class="brand-text">
+        <div class="brand-title" id="brand-title">&nbsp;</div>
+      </div>
+    </div>
+
+    <!-- Right Side: Forms -->
+    <div class="form-side">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="login">Login</button>
+        <button class="tab-btn" data-tab="register">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="login-panel" class="form-panel active-panel">
+        <div id="login-alert" class="alert"></div>
+        <div class="input-group">
+          <label>WhatsApp Number</label>
+          <div class="input-wrapper">
+            <input type="tel" id="login-phone" placeholder="628123456789" inputmode="numeric">
+            <svg class="icon-left" viewBox="0 0 24 24">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.574 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="login-password" placeholder="••••••••">
+            <svg class="icon-left" viewBox="0 0 24 24">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <svg class="toggle-password" viewBox="0 0 24 24" onclick="togglePassword('login-password', this)">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+        </div>
+        <button class="btn" id="login-btn" onclick="doLogin()">Login</button>
+      </div>
+
+      <!-- Register Form -->
+      <div id="register-panel" class="form-panel">
+        <div id="register-alert" class="alert"></div>
+        <div class="input-group">
+          <label>WhatsApp Number</label>
+          <div class="input-wrapper">
+            <input type="tel" id="register-phone" placeholder="628123456789" inputmode="numeric">
+            <svg class="icon-left" viewBox="0 0 24 24">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.574 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="register-password" placeholder="min. 6 characters">
+            <svg class="icon-left" viewBox="0 0 24 24">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <svg class="toggle-password" viewBox="0 0 24 24" onclick="togglePassword('register-password', this)">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Confirm Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="register-password2" placeholder="••••••••">
+            <svg class="icon-left" viewBox="0 0 24 24">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <svg class="toggle-password" viewBox="0 0 24 24" onclick="togglePassword('register-password2', this)">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+        </div>
+        <button class="btn" id="register-btn" onclick="doRegister()">Register</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Popup -->
+<div id="modal" class="modal-overlay" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-icon">⚠️</div>
+    <div class="modal-title">Number Not Found</div>
+    <div class="modal-body" id="modal-body">This number is not listed in the database</div>
+    <button class="modal-close" onclick="closeModal()">OK</button>
+  </div>
+</div>
+
+<script>
+  // Modal functions
+  function showModal(message) {
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modal-body');
+    modalBody.textContent = message || 'This number is not listed in the database';
+    modal.classList.add('show');
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('modal');
+    modal.classList.remove('show');
+  }
+
+  // Format Phone Number - Hanya angka
+  function formatPhoneNumber(input) {
+    let cleaned = input.value.replace(/\D/g, '');
+    input.value = cleaned;
+  }
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    const phoneInputs = ['login-phone', 'register-phone'];
+    phoneInputs.forEach(id => {
+      const input = document.getElementById(id);
+      if (input) {
+        input.addEventListener('input', function() { formatPhoneNumber(this); });
+        input.addEventListener('blur', function() { formatPhoneNumber(this); });
+      }
+    });
+    loadBotName();
+  });
+
+  async function loadBotName() {
+    try {
+      const res = await safeFetch('/api/botInfo')
+      const data = await res.json()
+      if (data && data.name) {
+        document.title = `${data.name} — Login`
+        document.getElementById('brand-title').textContent = data.name
+        document.querySelector('.brand-icon img').alt = data.name
+        return
+      }
+    } catch {}
+    // Kalau /api/botInfo gagal atau BOT_NAME kosong, biarkan judul/brand kosong
+    // (tidak ada nama hardcoded sebagai fallback)
+  }
+
+  // Toggle Password Visibility
+  function togglePassword(inputId, iconEl) {
+    const input = document.getElementById(inputId);
+    if (input.type === 'password') {
+      input.type = 'text';
+      iconEl.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    } else {
+      input.type = 'password';
+      iconEl.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    }
+  }
+
+  async function safeFetch(url, opts = {}) {
+    opts.headers = { ...(opts.headers || {}), 'bypass-tunnel-reminder': '1' }
+    const res = await fetch(url, opts)
+    // Kalau request ini kena halaman interstitial localtunnel ("Click to
+    // Continue"), responsenya text/html, bukan JSON, meskipun endpointnya
+    // /api/*. Deteksi ini di sini supaya errornya jelas, bukan cuma
+    // "Connection error." yang bikin bingung.
+    const contentType = res.headers.get('content-type') || ''
+    if (contentType.includes('text/html')) {
+      const err = new Error('TUNNEL_INTERSTITIAL')
+      err.isTunnelInterstitial = true
+      throw err
+    }
+    return res
+  }
+
+  function friendlyFetchError(err) {
+    if (err?.isTunnelInterstitial) {
+      return 'This link needs a one-time confirmation. Open the site URL directly in a new tab, tap "Click to Continue", then come back and try again.'
+    }
+    return 'Connection error.'
+  }
+
+  function showAlert(panel, message, isError = true) {
+    const alertEl = document.getElementById(`${panel}-alert`)
+    alertEl.textContent = message
+    alertEl.classList.add('show')
+    if (!isError) alertEl.classList.add('success-alert')
+    setTimeout(() => {
+      alertEl.classList.remove('show')
+      if (!isError) alertEl.classList.remove('success-alert')
+    }, 3000)
+  }
+
+  function setLoading(btn, loading) {
+    btn.disabled = loading
+    btn.textContent = loading ? '...' : (btn.id === 'login-btn' ? 'Login' : 'Register')
+  }
+
+  // Tab Switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'))
+      btn.classList.add('active')
+      const tab = btn.getAttribute('data-tab')
+      document.getElementById('login-panel').classList.toggle('active-panel', tab === 'login')
+      document.getElementById('register-panel').classList.toggle('active-panel', tab === 'register')
+      document.getElementById('login-alert').classList.remove('show')
+      document.getElementById('register-alert').classList.remove('show')
+    })
+  })
+
+  // Check number exists via API
+  async function checkNumberExists(phone) {
+    try {
+      const res = await safeFetch('/api/check-number', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone })
+      })
+      const data = await res.json()
+      return data.exists === true
+    } catch (err) {
+      console.error('Check number error:', err)
+      return false
+    }
+  }
+
+  async function doLogin() {
+    let phone = document.getElementById('login-phone').value.trim()
+    const password = document.getElementById('login-password').value
+    const btn = document.getElementById('login-btn')
+
+    phone = phone.replace(/\D/g, '');
+    
+    if (!phone || !password) {
+      showAlert('login', 'Please fill in all fields.')
+      return
+    }
+
+    setLoading(btn, true)
+    try {
+      const res = await safeFetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, password })
+      })
+      const data = await res.json()
+      if (data.success) {
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('phone', phone)
+        window.location.href = '/profile'
+      } else {
+        showAlert('login', data.message || 'Login failed.')
+      }
+    } catch (err) {
+      showAlert('login', friendlyFetchError(err))
+    } finally {
+      setLoading(btn, false)
+    }
+  }
+
+  async function doRegister() {
+    let phone = document.getElementById('register-phone').value.trim()
+    const password = document.getElementById('register-password').value
+    const password2 = document.getElementById('register-password2').value
+    const btn = document.getElementById('register-btn')
+
+    phone = phone.replace(/\D/g, '');
+
+    if (!phone || !password || !password2) {
+      showAlert('register', 'Please fill in all fields.')
+      return
+    }
+    if (password !== password2) {
+      showAlert('register', 'Passwords do not match.')
+      return
+    }
+    if (password.length < 6) {
+      showAlert('register', 'Password must be at least 6 characters.')
+      return
+    }
+
+    // Check if number exists in database
+    setLoading(btn, true)
+    try {
+      const exists = await checkNumberExists(phone)
+      if (!exists) {
+        showModal(`Number ${phone} is not listed in the database.\n\nPlease make sure you have used the bot before registering.`)
+        setLoading(btn, false)
+        return
+      }
+    } catch (err) {
+      showAlert('register', 'Cannot verify number. Please try again.')
+      setLoading(btn, false)
+      return
+    }
+
+    try {
+      const res = await safeFetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, password })
+      })
+      const data = await res.json()
+      if (data.success) {
+        localStorage.setItem('token', data.token)
+        localStorage.setItem('phone', phone)
+        window.location.href = '/profile'
+      } else {
+        showAlert('register', data.message || 'Registration failed.')
+      }
+    } catch (err) {
+      showAlert('register', friendlyFetchError(err))
+    } finally {
+      setLoading(btn, false)
+    }
+  }
+
+  // Enter key support
+  document.getElementById('login-password')?.addEventListener('keypress', e => {
+    if (e.key === 'Enter') doLogin()
+  })
+  document.getElementById('register-password2')?.addEventListener('keypress', e => {
+    if (e.key === 'Enter') doRegister()
+  })
+</script>
+</body>
+</html>

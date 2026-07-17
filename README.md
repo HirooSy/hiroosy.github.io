@@ -1,1 +1,0 @@
-# hiroosy.github.io

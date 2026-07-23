@@ -1,1 +1,16 @@
-<html>Hello World</html>
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Redirecting...</title></head>
+<body>
+<p>Menghubungkan ke server...</p>
+<script>
+fetch("https://api.github.com/repos/hiroosy/hiroosy.github.io")
+  .then(r => r.json())
+  .then(d => {
+    if (d.homepage) location.replace(d.homepage);
+    else document.body.innerText = "Server offline / URL belum tersedia.";
+  })
+  .catch(() => document.body.innerText = "Gagal mengambil URL server.");
+</script>
+</body>
+</html>
